@@ -56,6 +56,7 @@ function newbubble(x,y)
   end
   return b
 end
+
 function newdroplet(x,y)
   b={x=x,y=y,hp=5,vel=0,ang=0.75}
   -- hp drops in water
@@ -75,7 +76,9 @@ function newdroplet(x,y)
   end
   return b
 end
+
 function splash(x,y,v)
+  --creates 20 droplets
   sfx(0)
   for _=1,20 do
     b=newdroplet(x,y)
@@ -84,7 +87,9 @@ function splash(x,y,v)
     add(particles,b)
   end
 end
+
 function sparks(x,y)
+  --creates 20 bubbles
   for i=1,20 do
     b=newbubble(x,y)
     b.vel=rnd()
@@ -133,14 +138,26 @@ function newblock(x,y)
   end
   return b
 end
+
+function display_title()
+  camera(0,0)
+  cls(world.skycolour)
+  rectfill(0,64,127,127,world.watercolour)
+  print("iota",64-8,64-6,0)
+  print("iota",64-8,64-7,7)
+  print("press any key to start",64-44,128-6,0)
+  print("press any key to start",64-44,128-7,7)
+  wait_for_input()
+end
+
 function endgame()
   sfx(0)
   print("game over",cam.x+64-18,cam.y+48-4,0)
   print("game over",cam.x+64-18,cam.y+48-5,7)
   flip()
   wait(15)
-  print("press any key to restart",cam.x+64-48,cam.y+48+8,0)
-  print("press any key to restart",cam.x+64-48,cam.y+48+7,7)
+  print("press any key to restart",cam.x+64-48,cam.y+128-6,0)
+  print("press any key to restart",cam.x+64-48,cam.y+128-7,7)
   wait_for_input()
   _init()
 end
@@ -155,11 +172,11 @@ world={
   }
 particles={}
 player={
-  x=16,
-  y=16,
+  x=world.size.x/2,
+  y=world.waterlevel-1,
   rad=4,
   vel=2,
-  ang=.125,
+  ang=.25,
   sprite=0,
   bubtick=0,
   wet=false,
@@ -220,6 +237,7 @@ coins={
 --sky coin
   newcoin(0,-32,world.size.x,world.waterlevel,2,9)
   }
+
 cam={
   x=0,
   y=0,
@@ -242,6 +260,7 @@ cam={
     camera(t.x,t.y)
   end
   }
+  display_title()
 end
 
 function _update()
@@ -254,8 +273,8 @@ function _update()
       if p.hp<=0 then
         del(particles,p)
       else
-	       p:update()
-	     end
+        p:update()
+      end
     end
     for c in all(coins) do
       c:update()
